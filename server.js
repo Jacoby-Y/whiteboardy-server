@@ -15,14 +15,15 @@ const server = http.createServer(app);
 
 const port = process.env.PORT ?? 8866;
 
+console.log(`Listening on port: ${port}`);
+
 server.listen(port);
 //#endregion
 
 //#region | Middleware
 const userRoutes = require("./routes/user");
 
-//["http://localhost:3000", 
-app.use(cors({ origin: "https://whiteboardy-client.vercel.app", credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"], credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("", userRoutes);
