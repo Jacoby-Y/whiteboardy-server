@@ -21,7 +21,8 @@ server.listen(port);
 //#region | Middleware
 const userRoutes = require("./routes/user");
 
-app.use(cors({ origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"], credentials: true }));
+//["http://localhost:3000", 
+app.use(cors({ origin: "https://whiteboardy-client.vercel.app", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("", userRoutes);
