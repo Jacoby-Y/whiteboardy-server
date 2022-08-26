@@ -54,15 +54,18 @@ app.get('/whiteboard/:id', function (req, res) {
     res.status(200).json({ has_id: whiteboards.includes(id) });
 });
 
-const io = require("socket.io")(server, {
-    cors: {
-        origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"],
-        methods: ["GET", "POST"],
-    }
-});
+const { Server } = require("socket.io");
+const io = new Server(server, {});
+
+// const io = require("socket.io")(server, {
+//     cors: {
+//         origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"],
+//         methods: ["GET", "POST"],
+//     }
+// });
 
 io.on("connection", socket => {
-    console.log("connected");
+    // console.log("connected");
     socket.on("emit-points", ({ id, data, color, width }) => {
         socket.broadcast.emit("get-points:" + id, { data, color, width });
     });
@@ -73,11 +76,11 @@ io.on("connection", socket => {
         socket.broadcast.emit(`get-drawing:${id}`, { data, users });
     });
     socket.on("open", ({ id }) => {
-        console.log("New board!");
+        // console.log("New board!");
         whiteboards.push(id);
     });
     socket.on("close-whiteboard", ({ id }) => {
-        console.log("Removing board...");
+        // console.log("Removing board...");
 
         socket.broadcast.emit("closed:" + id, null);
 
