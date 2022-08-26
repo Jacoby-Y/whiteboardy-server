@@ -29,7 +29,13 @@ const login = async (req, res) => {
     }
 
     // Check if user in database
-    const found = await userSchema.findOne({ email });
+    let found;
+
+    try {
+        found = await userSchema.findOne({ email });
+    } catch (err) {
+        return res.status(400).json({ message: `Database is struggling to find user with email: ${email}` })
+    }
 
     if (!found) {
         return res.status(400).json({ message: "User not found!" })
