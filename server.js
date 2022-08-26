@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const http = require('http');
+const path = require("path");
 const express = require('express');
 const app = express();
 
@@ -24,13 +25,14 @@ server.listen(port);
 const userRoutes = require("./routes/user");
 
 app.use(cors({ origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"], credentials: true }));
+app.use(express.static("public"));
 app.use(cookieParser());
 app.use(express.json());
 app.use("", userRoutes);
 //#endregion
 
-app.get('/', function (req, res) {
-    res.status(200).json({ message: "Success!" });
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 //#region | Connect to MongoDB
