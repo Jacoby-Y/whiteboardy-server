@@ -56,7 +56,7 @@ app.get('/whiteboard/:id', function (req, res) {
 
 const io = require("socket.io")(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"],
         methods: ["GET", "POST"],
     }
 });
@@ -64,9 +64,6 @@ const io = require("socket.io")(server, {
 io.on("connection", socket => {
     console.log("connected");
     socket.on("emit-points", ({ id, data, color, width }) => {
-        // console.log(data, color, width);
-        // console.log(id, data);
-        // console.log("get-points:" + id);
         socket.broadcast.emit("get-points:" + id, { data, color, width });
     });
     socket.on("drawing-request", ({ id }) => {
@@ -78,7 +75,7 @@ io.on("connection", socket => {
     socket.on("open", ({ id }) => {
         console.log("New board!");
         whiteboards.push(id);
-    })
+    });
     socket.on("close-whiteboard", ({ id }) => {
         console.log("Removing board...");
 
