@@ -14,7 +14,7 @@ const cors = require("cors");
 
 const server = http.createServer(app);
 
-const port = process.env.PORT ?? 8866;
+const port = process.env.PORT ?? 866;
 
 console.log(`Listening on port: ${port}`);
 
