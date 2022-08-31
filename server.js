@@ -31,15 +31,11 @@ app.use(express.json());
 app.use("", userRoutes);
 //#endregion
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 //#region | Connect to MongoDB
 // console.log("Connecting...");
 mongoose.connect(process.env.MONGO_URI)
     .then((ok) => {
-        console.log("Connected!");
+        console.log("Connected to MongoDB");
     })
     .catch((err) => {
         console.log(err);
@@ -47,9 +43,17 @@ mongoose.connect(process.env.MONGO_URI)
 //#endregion
 
 //#region | Socket Stuff
-const whiteboards = [];
+const whiteboards = {};
+const set_wb = (id) => {
+    whiteboards[id] = {
+        users: 1
+    }
+}
+const del_wb = (id) => {
+    delete whiteboards[id];
+}
 
-app.get('/whiteboard/:id', function (req, res) {
+app.get('/has_wb/:id', function (req, res) {
     const { id } = req.params;
     res.status(200).json({ has_id: whiteboards.includes(id) });
 });
@@ -57,15 +61,7 @@ app.get('/whiteboard/:id', function (req, res) {
 const { Server } = require("socket.io");
 const io = new Server(server, {});
 
-// const io = require("socket.io")(server, {
-//     cors: {
-//         origin: ["http://localhost:3000", "https://whiteboardy-client.vercel.app"],
-//         methods: ["GET", "POST"],
-//     }
-// });
-
 io.on("connection", socket => {
-    // console.log("connected");
     socket.on("emit-points", ({ id, data, color, width }) => {
         socket.broadcast.emit("get-points:" + id, { data, color, width });
     });
@@ -77,17 +73,19 @@ io.on("connection", socket => {
     });
     socket.on("open", ({ id }) => {
         // console.log("New board!");
-        whiteboards.push(id);
+        set_wb(id);
     });
     socket.on("close-whiteboard", ({ id }) => {
-        // console.log("Removing board...");
-
         socket.broadcast.emit("closed:" + id, null);
-
-        if (!whiteboards.includes(id)) return;
-        whiteboards.splice(
-            whiteboards.indexOf(id), 1
-        );
+        del_wb(id);
     });
+
+    // console.log(Object.values(io.engine.clients)[0]);
+    // console.log(io.engine);
 });
 //#endregion
+
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
