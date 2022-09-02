@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 const port = process.env.PORT ?? 866;
 
-console.log(`Listening on port: ${port}`);
+console.log(`Listening at: http://localhost:${port}`);
 
 server.listen(port);
 //#endregion
@@ -55,7 +55,7 @@ const del_wb = (id) => {
 
 app.get('/has_wb/:id', function (req, res) {
     const { id } = req.params;
-    res.status(200).json({ has_id: whiteboards.includes(id) });
+    res.status(200).json({ has_id: !!whiteboards[id] });
 });
 
 const { Server } = require("socket.io");
@@ -84,7 +84,6 @@ io.on("connection", socket => {
     // console.log(io.engine);
 });
 //#endregion
-
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));

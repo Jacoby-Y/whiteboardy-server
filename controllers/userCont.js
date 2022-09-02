@@ -72,9 +72,21 @@ const getUser = async (req, res) => {
     return res.status(200).json({ email: user.email });
 }
 
+const delUser = async (req, res) => {
+    const user = req.user;
+
+    const found = await userSchema.findOneAndDelete({ email: user.email });
+
+    if (!found) return res.status(400).json({ message: "Can't delete user!" })
+    
+    res.clearCookie("accessToken");
+    return res.status(200).json({ message: "Deleted user!" });
+}
+
 module.exports = {
     register,
     login,
     getAll,
     getUser,
+    delUser,
 }
