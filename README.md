@@ -3,7 +3,7 @@
 
 ___
 
-Hosted here: https://whiteboardy-server.herokuapp.com/   
+Hosted here: https://whiteboardy-server.herokuapp.com/ (doesn't work anymore)   
 Front end code here: https://github.com/Jacoby-Y/whiteboardy-client
 
 ___
